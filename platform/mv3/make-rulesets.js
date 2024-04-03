@@ -1303,6 +1303,14 @@ async function main() {
         homeURL: 'https://github.com/StevenBlack/hosts#readme',
     });
 
+    await rulesetFromURLs({
+        id: 'ctrlblk',
+        name: 'CtrlBlk filters',
+        enabled: true,
+        urls: [ 'https://filters.ctrlblk.dev/ctrlblk-filters.txt' ],
+        homeURL: 'https://github.com/ctrlblk/ctrlblk-filters#readme',
+    });
+
     writeFile(
         `${rulesetDir}/ruleset-details.json`,
         `${JSON.stringify(rulesetDetails, null, 1)}\n`
