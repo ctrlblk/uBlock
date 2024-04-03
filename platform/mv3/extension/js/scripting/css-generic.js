@@ -23,12 +23,26 @@
 
 // Important!
 // Isolate from global scope
-(function uBOL_cssGeneric() {
+(async function uBOL_cssGeneric() {
 
 const genericSelectorMap = self.genericSelectorMap || new Map();
 delete self.genericSelectorMap;
 
 if ( genericSelectorMap.size === 0 ) { return; }
+
+/******************************************************************************/
+
+const { toImport } = await chrome.runtime.sendMessage({ key: "getRuntimeScriptingGenericCosmeticFilters" })
+
+for (const toImportEntry of toImport) {
+    const existing = genericSelectorMap.get(toImportEntry[0]);
+    genericSelectorMap.set(
+        toImportEntry[0],
+        existing === undefined
+            ? toImportEntry[1]
+            : `${existing},${toImportEntry[1]}`
+    );
+}
 
 /******************************************************************************/
 

@@ -27,13 +27,23 @@
 
 // Important!
 // Isolate from global scope
-(function uBOL_cssSpecific() {
+(async function uBOL_cssSpecific() {
 
 /******************************************************************************/
 
 const specificImports = self.specificImports || [];
 self.specificImports = undefined;
 delete self.specificImports;
+
+/******************************************************************************/
+
+const { argsList, hostnamesMap, entitiesMap, exceptionsMap } = await chrome.runtime.sendMessage({ key: "getRuntimeScriptingSpecificCosmeticFilters" })
+specificImports.push({
+    argsList,
+    hostnamesMap: new Map(hostnamesMap),
+    entitiesMap: new Map(entitiesMap),
+    exceptionsMap: new Map(exceptionsMap),
+ })
 
 /******************************************************************************/
 

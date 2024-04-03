@@ -23,7 +23,6 @@
 
 /******************************************************************************/
 
-import fs from 'fs/promises';
 import { builtinScriptlets } from './scriptlets.js';
 import { safeReplace } from './safe-replace.js';
 
@@ -146,11 +145,28 @@ export function compile(details) {
 
 /******************************************************************************/
 
+async function readScriptletTemplate() {
+    /// XXX: Hack that allows to use this script both in a nodejs and in a browser
+    // extension enviroment. Needed to allow us to use/create scriptlets both during
+    // static rule generation and dynamically at runtime for custom filters
+    try {
+        let response = await fetch("/js/scripting/scriptlet.template.js")
+        return await response.text()
+    } catch (error) {
+        if (error.message === "Failed to parse URL from /js/scripting/scriptlet.template.js") {
+            const fs = await import('fs/promises')
+            return await fs.readFile(
+                './uBOBits/scriptlets/scriptlet.template.js',
+                { encoding: 'utf8' }
+            );
+        }
+        throw error
+    }
+}
+
 export async function commit(rulesetId, path, writeFn) {
-    const scriptletTemplate = await fs.readFile(
-        './scriptlets/scriptlet.template.js',
-        { encoding: 'utf8' }
-    );
+    const scriptletTemplate = await readScriptletTemplate()
+
     const patchHnMap = hnmap => {
         const out = Array.from(hnmap);
         out.forEach(a => {

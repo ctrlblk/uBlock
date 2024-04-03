@@ -25,7 +25,7 @@
 
 // Important!
 // Isolate from global scope
-(function uBOL_cssProcedural() {
+(async function uBOL_cssProcedural() {
 
 /******************************************************************************/
 
@@ -35,6 +35,15 @@ delete self.proceduralImports;
 
 /******************************************************************************/
 
+const { argsList, hostnamesMap, entitiesMap, exceptionsMap } = await chrome.runtime.sendMessage({ key: "getRuntimeScriptingProceduralFilters" })
+proceduralImports.push({
+    argsList,
+    hostnamesMap: new Map(hostnamesMap),
+    entitiesMap: new Map(entitiesMap),
+    exceptionsMap: new Map(exceptionsMap),
+ })
+
+/******************************************************************************/
 const hnParts = [];
 try { hnParts.push(...document.location.hostname.split('.')); }
 catch(ex) { }

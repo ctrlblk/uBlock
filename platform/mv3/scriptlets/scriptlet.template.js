@@ -33,22 +33,36 @@
 // Isolate from global scope
 
 // Start of local scope
-(( ) => {
+(async ( ) => {
 
 /******************************************************************************/
 
 // Start of code to inject
-const uBOL_$scriptletName$ = function() {
+const uBOL_$scriptletName$ = async function() {
 
 const scriptletGlobals = {}; // jshint ignore: line
 
-const argsList = self.$argsList$;
+const rulesetId = "$rulesetId$"
+const scriptletName = "$scriptletName$"
 
-const hostnamesMap = new Map(self.$hostnamesMap$);
+const { argsList, hostnamesMap, entitiesMap, exceptionsMap } = await (async (rulesetId) => {
+    if (rulesetId == "_session") {
+        let { argsList, hostnamesMap, entitiesMap, exceptionsMap } = await chrome.runtime.sendMessage({ key: "getRuntimeScriptletFilters", args: [{scriptletName}] })
+        return {
+            argsList,
+            hostnamesMap: new Map(hostnamesMap),
+            entitiesMap: new Map(entitiesMap),
+            exceptionsMap: new Map(exceptionsMap),
+        }
+    } else {
+        const argsList = self.$argsList$;
+        const hostnamesMap = new Map(self.$hostnamesMap$);
+        const entitiesMap = new Map(self.$entitiesMap$);
+        const exceptionsMap = new Map(self.$exceptionsMap$);
 
-const entitiesMap = new Map(self.$entitiesMap$);
-
-const exceptionsMap = new Map(self.$exceptionsMap$);
+        return { argsList, hostnamesMap, entitiesMap, exceptionsMap }
+    }
+})(rulesetId)
 
 /******************************************************************************/
 
@@ -136,7 +150,7 @@ const targetWorld = '$world$';
 
 // Not Firefox
 if ( typeof wrappedJSObject !== 'object' || targetWorld === 'ISOLATED' ) {
-    return uBOL_$scriptletName$();
+    return await uBOL_$scriptletName$();
 }
 
 // Firefox

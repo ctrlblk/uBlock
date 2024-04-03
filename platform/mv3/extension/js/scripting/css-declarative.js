@@ -27,13 +27,23 @@
 
 // Important!
 // Isolate from global scope
-(function uBOL_cssDeclarative() {
+(async function uBOL_cssDeclarative() {
 
 /******************************************************************************/
 
 const declarativeImports = self.declarativeImports || [];
 self.declarativeImports = undefined;
 delete self.declarativeImports;
+
+/******************************************************************************/
+
+const { argsList, hostnamesMap, entitiesMap, exceptionsMap } = await chrome.runtime.sendMessage({ key: "getRuntimeScriptingDeclarativeFilters" })
+declarativeImports.push({
+    argsList,
+    hostnamesMap: new Map(hostnamesMap),
+    entitiesMap: new Map(entitiesMap),
+    exceptionsMap: new Map(exceptionsMap),
+ })
 
 /******************************************************************************/
 
