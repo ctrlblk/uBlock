@@ -614,7 +614,7 @@
 		"title": "🇬🇷gr 🇨🇾cy: Greek AdBlock Filter",
 		"tags": "ads greek",
 		"lang": "el",
-		"contentURL": "https://www.void.gr/kargig/void-gr-filters.txt",
+		"contentURL": "https://raw.githubusercontent.com/kargig/greek-adblockplus-filter/master/void-gr-filters.txt",
 		"supportURL": "https://github.com/kargig/greek-adblockplus-filter"
 	},
 	"HRV-0": {
